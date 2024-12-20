@@ -12,53 +12,29 @@ import { useNavigate } from 'react-router-dom';
 import backend from '../services/backend';
 
 export default function Dashboard() {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [members, setMembers] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const response = await backend.getDashboardData();
-        setDashboardData(response.status.data);
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load dashboard data');
-        setLoading(false);
-        if (err.response?.status === 401) {
-          navigate('/login');
-        }
-      }
-    };
-
-    fetchDashboardData();
-  }, [navigate]);
 
   const handleLogout = async () => {
     try {
       await backend.logout();
       navigate('/login');
     } catch (err) {
-      setError('Logout failed');
+      console.error(err);
     }
   };
 
-  if (loading) {
-    return (
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        alignItems="center" 
-        minHeight="100vh"
-      >
-        <CircularProgress />
-      </Box>
-    );
+  async function fetchMembers() {
+    const data = await backend.fetchMembers();
+    setMembers(data.users);
   }
 
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
@@ -70,21 +46,24 @@ export default function Dashboard() {
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        {error && (
-          <Typography color="error" sx={{ mb: 2 }}>
-            {error}
-          </Typography>
-        )}
-        {dashboardData && (
+        <Typography variant="h4" gutterBottom>
+          Welcome, DirectShifts
+        </Typography>
+        {members.length > 0 ? (
+          <Box>
+            {members.map((member) =>
+              <Typography variant="body1" key={member.id}>
+                {member.name}
+              </Typography>
+            )}
+          </Box>
+        ) : 
           <Box>
             <Typography variant="h4" gutterBottom>
-              Welcome, {dashboardData.user.name}!
-            </Typography>
-            <Typography variant="body1">
-              {dashboardData.message}
+              No members yet
             </Typography>
           </Box>
-        )}
+        }
       </Container>
     </Box>
   );

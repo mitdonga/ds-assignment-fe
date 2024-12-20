@@ -7,35 +7,35 @@ import {
   Link, 
   Grid, 
   Box, 
-  Typography, 
-  Container 
+  Typography 
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
 import backend from '../services/backend';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
-    
+
     try {
       const response = await backend.login(email, password);
-      if (response.status.code === 200) {
+      console.log('Inside Login')
+      if (response.status === 200){
         navigate('/dashboard');
+        toast.success('Logged in successfully');
       }
     } catch (err) {
-      setError(err.response?.data?.status?.message || 'Login failed');
+      toast.error(err.data?.message || 'Something went wrong');
     }
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Box maxWidth={400}> 
       <CssBaseline />
       <Box
         sx={{
@@ -51,11 +51,6 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        {error && (
-          <Typography color="error" variant="body2">
-            {error}
-          </Typography>
-        )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -98,6 +93,6 @@ export default function Login() {
           </Grid>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 }

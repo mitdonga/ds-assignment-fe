@@ -11,8 +11,7 @@ function PrivateRoute({ children }) {
 }
 
 function PublicRoute({ children }) {
-  const user = backend.getCurrentUser();
-  return !user ? children : <Navigate to="/dashboard" />;
+  return children;
 }
 
 function Routes() {
@@ -20,19 +19,11 @@ function Routes() {
     <Rts>
       <Route 
         path="/login" 
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        } 
+        element={<Login />} 
       />
       <Route 
         path="/signup" 
-        element={
-          <PublicRoute>
-            <SignUp />
-          </PublicRoute>
-        }
+        element={<SignUp />}
       />
       <Route 
         path="/dashboard" 

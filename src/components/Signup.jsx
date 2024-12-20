@@ -7,8 +7,7 @@ import {
   Link,
   Grid,
   Box,
-  Typography,
-  Container
+  Typography
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +34,7 @@ export default function SignUp() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Box maxWidth={400}> 
       <CssBaseline />
       <Box
         sx={{
@@ -113,6 +112,6 @@ export default function SignUp() {
           </Grid>
         </Box>
       </Box>
-    </Container>
+    </Box>
   );
 }
