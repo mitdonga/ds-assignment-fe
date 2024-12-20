@@ -5,11 +5,12 @@ import {
   Typography, 
   AppBar, 
   Toolbar, 
-  Button,
-  CircularProgress
+  Button
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import backend from '../services/backend';
+import Members from './Members';
+import Invite from './Invite';
 
 export default function Dashboard() {
   const [members, setMembers] = useState([]);
@@ -38,7 +39,7 @@ export default function Dashboard() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Dashboard
+            DirectShifts
           </Typography>
           <Button color="inherit" onClick={handleLogout}>
             Logout
@@ -46,17 +47,12 @@ export default function Dashboard() {
         </Toolbar>
       </AppBar>
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Welcome, DirectShifts
+        <Typography variant="h2" gutterBottom>
+          Welcome To DirectShifts
         </Typography>
+        <Invite />
         {members.length > 0 ? (
-          <Box>
-            {members.map((member) =>
-              <Typography variant="body1" key={member.id}>
-                {member.name}
-              </Typography>
-            )}
-          </Box>
+          <Members members={members} />
         ) : 
           <Box>
             <Typography variant="h4" gutterBottom>

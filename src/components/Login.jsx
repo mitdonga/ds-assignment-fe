@@ -15,16 +15,14 @@ import backend from '../services/backend';
 import { toast } from 'react-toastify';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [data, setData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await backend.login(email, password);
-      console.log('Inside Login')
+      const response = await backend.login(data.email, data.password);
       if (response.status === 200){
         navigate('/dashboard');
         toast.success('Logged in successfully');
@@ -33,6 +31,11 @@ export default function Login() {
       toast.error(err.data?.message || 'Something went wrong');
     }
   };
+
+  const updateData = (event) => {
+    const { name, value } = event.target;
+    setData({...data, [name]: value});
+  }
 
   return (
     <Box> 
@@ -56,13 +59,11 @@ export default function Login() {
             margin="normal"
             required
             fullWidth
-            id="email"
             label="Email Address"
             name="email"
-            autoComplete="email"
             autoFocus
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={data.email}
+            onChange={updateData}
           />
           <TextField
             margin="normal"
@@ -71,10 +72,8 @@ export default function Login() {
             name="password"
             label="Password"
             type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={data.password}
+            onChange={updateData}
           />
           <Button
             type="submit"

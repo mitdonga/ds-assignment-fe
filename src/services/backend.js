@@ -1,10 +1,10 @@
 import axiosInstance from './axiosInstance';
 
 const authService = {
-  signup: async (name, email, password) => {
+  signup: async (name, email, password, ref=null) => {
     try {
       const response = await axiosInstance.post('/signup', {
-        user: { name, email, password }
+        user: { name, email, password }, ref
       });
       return response;
     } catch (error) {
@@ -47,6 +47,16 @@ const authService = {
     }
   },
 
+  sendInvite: async (email) => {
+    try {
+      const response = await axiosInstance.post('/members/invite', { email });
+      return response;
+    } catch (error) {
+      console.error('Invite error', error.response?.data);
+      throw error;
+    }
+  },
+
   getCurrentUser: async () => {
     try {
       const response = await axiosInstance.get('/me');
@@ -55,16 +65,6 @@ const authService = {
       return null
     }
   },
-
-  getDashboardData: async () => {
-    try {
-      const response = await axiosInstance.get('/dashboard');
-      return response.data;
-    } catch (error) {
-      console.error('Dashboard error', error.response?.data);
-      throw error;
-    }
-  }
 };
 
 export default authService;

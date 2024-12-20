@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Avatar,
   Button,
@@ -15,15 +15,14 @@ import backend from '../services/backend';
 import { toast } from 'react-toastify';
 
 export default function SignUp() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const params = new URLSearchParams(location.search);
+  const [data, setData] = useState({ name: '', email: params.get('email'), password: '' });
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await backend.signup(name, email, password);
+      const response = await backend.signup(data.name, data.email, data.password, params.get('ref'));
       if (response.status === 200) {
         toast.success('Signed up successfully');
         navigate('/login');
@@ -39,6 +38,11 @@ export default function SignUp() {
       }
     }
   };
+
+  const updateData = (event) => {
+    const { name, value } = event.target;
+    setData({...data, [name]: value});
+  }
 
   return (
     <Box> 
@@ -63,24 +67,23 @@ export default function SignUp() {
               <TextField
                 required
                 fullWidth
-                id="name"
                 label="Full Name"
                 name="name"
                 autoComplete="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={data.name}
+                onChange={updateData}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 required
                 fullWidth
-                id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type='email'
+                value={data.email}
+                disabled={params.get('email').length > 0}
+                onChange={updateData}
               />
             </Grid>
             <Grid item xs={12}>
@@ -90,10 +93,8 @@ export default function SignUp() {
                 name="password"
                 label="Password"
                 type="password"
-                id="password"
-                autoComplete="new-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={data.password}
+                onChange={updateData}
               />
             </Grid>
           </Grid>
