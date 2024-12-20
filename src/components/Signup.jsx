@@ -12,29 +12,36 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
 import backend from '../services/backend';
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
     try {
       const response = await backend.signup(name, email, password);
-      if (response.status.code === 200) {
-        navigate('/dashboard');
+      if (response.status === 200) {
+        toast.success('Signed up successfully');
+        navigate('/login');
       }
     } catch (err) {
-      setError(err.response?.data?.status?.message || 'Signup failed');
+      const errors = err.data?.errors;
+      if (errors && errors.length > 0) {
+        errors.forEach((e) => {
+          toast.error(e);
+        });
+      } else {
+        toast.error(err.data?.message || 'Something went wrong');
+      }
     }
   };
 
   return (
-    <Box maxWidth={400}> 
+    <Box> 
       <CssBaseline />
       <Box
         sx={{
@@ -50,11 +57,6 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        {error && (
-          <Typography color="error" variant="body2">
-            {error}
-          </Typography>
-        )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>

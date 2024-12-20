@@ -35,7 +35,7 @@ export default function Login() {
   };
 
   return (
-    <Box maxWidth={400}> 
+    <Box> 
       <CssBaseline />
       <Box
         sx={{

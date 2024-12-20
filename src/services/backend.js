@@ -6,7 +6,7 @@ const authService = {
       const response = await axiosInstance.post('/signup', {
         user: { name, email, password }
       });
-      return response.data;
+      return response;
     } catch (error) {
       console.error('Signup error', error.response?.data);
       throw error;
