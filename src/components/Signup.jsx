@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { 
   Avatar,
   Button,
@@ -82,7 +82,7 @@ export default function SignUp() {
                 name="email"
                 type='email'
                 value={data.email}
-                disabled={params.get('email').length > 0}
+                disabled={params.get('email')?.length > 0}
                 onChange={updateData}
               />
             </Grid>
